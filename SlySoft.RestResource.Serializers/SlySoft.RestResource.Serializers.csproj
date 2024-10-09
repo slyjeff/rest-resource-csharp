@@ -5,11 +5,12 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.3-Beta</Version>
+    <Version>1.0.0.8-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
     <Title>SlySoft REST Resource HAL Utils</Title>
     <Company>SlySoft</Company>
     <Copyright>Jeff Sylvester, 2023</Copyright>
+    <RepositoryUrl>https://github.com/slyjeff/rest-resource-csharp</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -37,11 +38,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SlySoft.RestResource\SlySoft.RestResource.csproj" />
+    <Compile Remove="FromHalJsonExtensions.cs" />
+    <Compile Remove="FromHalXmlExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="FromHalJsonExtensions.cs" />
-    <Compile Remove="FromHalXmlExtensions.cs" />
+    <ProjectReference Include="..\Slysoft.RestResource\SlySoft.RestResource.csproj" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,6 @@ internal static class StringExtensions {
     }
     
     public static bool IsResourceProperty(this string value) {
-        return value is "Uri" or "Links" or "EmbeddedResource";
+        return value is "Links";
     }
 }

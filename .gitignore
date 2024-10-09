@@ -3,6 +3,7 @@ bin/
 obj/
 /packages/
 build/
+PackageBuild/
 
 # Jet Brains
 riderModule.iml

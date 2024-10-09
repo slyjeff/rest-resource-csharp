@@ -5,12 +5,13 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.6-Beta</Version>
+    <Version>1.0.0.8-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
     <Title>SlySoft Rest Resource</Title>
     <Company>SlySoft</Company>
     <Copyright>Jeff Sylvester, 2023</Copyright>
     <Description>Utility for creating representing resources containing data, links, and embedded resources.</Description>
+    <RepositoryUrl>https://github.com/slyjeff/rest-resource-csharp</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -38,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
 
