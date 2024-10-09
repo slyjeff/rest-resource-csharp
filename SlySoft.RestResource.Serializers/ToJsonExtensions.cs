@@ -43,31 +43,30 @@ public static class ToJsonExtensions {
             return;
         }
         
-        if (data.Value is string stringValue) {
-            o[data.Key] = stringValue;
-            return;
-        }
-
-        var dataType = data.Value.GetType();
-        if (typeof(IEnumerable).IsAssignableFrom(dataType)) {
-            var array = new JArray();
-            foreach (var item in (IEnumerable)data.Value) {
-                if (item is not string & item.GetType().IsClass) {
-                    array.Add(item.CreateJObject());
-                    continue;
+        switch (data.Value) {
+            case string stringValue:
+                o[data.Key] = stringValue;
+                break;
+            case IEnumerable enumerable:
+                var array = new JArray();
+                foreach (var item in enumerable) {
+                    if (item is not string & item.GetType().IsClass) {
+                        array.Add(item.CreateJObject());
+                        continue;
+                    }
+                    array.Add(item);
                 }
-                array.Add(item);
-            }
-            o[data.Key] = array;
-            return;
-        }
+                o[data.Key] = array;
+                break;
+            default:
+                if (data.Value.GetType().IsClass) {
+                    o[data.Key] = data.Value.CreateJObject();
+                    return;
+                }
 
-        if (dataType.IsClass) {
-            o[data.Key] = data.Value.CreateJObject();
-            return;
+                o[data.Key] = new JValue(data.Value);
+                break;
         }
-
-        o[data.Key] = new JValue(data.Value);
     }    
 
     private static void AddLink(this JObject o, Link link) {

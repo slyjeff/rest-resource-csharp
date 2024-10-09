@@ -53,22 +53,32 @@ public static class ToXmlExtensions {
         if (data.Value == null) {
             return;
         }
-
-        var dataType = data.Value.GetType();
-        if (typeof(IEnumerable).IsAssignableFrom(dataType) && data.Value is not string) {
-            xmlWriter.WriteStartElement(data.Key);
-            foreach (var item in (IEnumerable)data.Value) {
-                xmlWriter.AddData(new KeyValuePair<string,object?>("value", item));
-            }
-            xmlWriter.WriteEndElement();
-        } else if (dataType.IsClass && data.Value is not string) {
-            xmlWriter.WriteObject(data.Value, data.Key);
-        } else {
-            xmlWriter.WriteStartElement(data.Key);
-            xmlWriter.WriteValue(data.Value);
-            xmlWriter.WriteEndElement();
-        }
+        
+        switch (data.Value) {
+            case string stringValue:
+                xmlWriter.WriteStartElement(data.Key);
+                xmlWriter.WriteValue(stringValue);
+                xmlWriter.WriteEndElement();
+                break;
+            case IEnumerable enumerable:
+                xmlWriter.WriteStartElement(data.Key);
+                foreach (var item in enumerable) {
+                    xmlWriter.AddData(new KeyValuePair<string,object?>("value", item));
+                }
+                xmlWriter.WriteEndElement();
+                break;
+            default:
+                if (data.Value.GetType().IsClass) {
+                    xmlWriter.WriteObject(data.Value, data.Key);
+                    return;
+                }
+                xmlWriter.WriteStartElement(data.Key);
+                xmlWriter.WriteValue(data.Value);
+                xmlWriter.WriteEndElement();
+                break;
+        }        
     }
+    
     private static void AddLink(this XmlWriter xmlWriter, Link link) {
         xmlWriter.WriteStartElement("link");
         xmlWriter.WriteAttributeString("rel", link.Name);

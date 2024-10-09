@@ -7,11 +7,9 @@ using SlySoft.RestResource.Serializers;
 
 namespace SlySoft.RestResource.AspNetCoreUtils; 
 
-public sealed class ResourceHalXmlFormatter : TextOutputFormatter {
-    public ResourceHalXmlFormatter() {
-        SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(new StringSegment("application/xml")));
-        SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(new StringSegment("application/hal+xml")));
-        SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(new StringSegment("application/slysoft.hal+xml")));
+public sealed class ResourceSlysoftJsonFormatter : TextOutputFormatter {
+    public ResourceSlysoftJsonFormatter() {
+        SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(new StringSegment("application/slysoft+json")));
 
         SupportedEncodings.Add(Encoding.UTF8);
         SupportedEncodings.Add(Encoding.Unicode);
@@ -24,9 +22,9 @@ public sealed class ResourceHalXmlFormatter : TextOutputFormatter {
     public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding) {
         var response = context.HttpContext.Response;
 
-        context.HttpContext.Response.Headers["Content-Type"] = "application/slysoft.hal+xml";
+        context.HttpContext.Response.Headers["Content-Type"] ="application/slysoft+json";
 
         var resource = context.Object as Resource;
-        return response.WriteAsync(resource?.ToSlySoftHalXml());
+        return response.WriteAsync(resource?.ToSlySoftHalJson());
     }
 }

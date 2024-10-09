@@ -27,7 +27,7 @@ public static class ToHtmlExtensions {
 
             var scripts = new List<string>();
 
-            WriteResourceAsHtml(htmlWriter, resource, scripts);
+            htmlWriter.WriteResourceAsHtml(resource, scripts);
 
             WriteScripts(htmlWriter, scripts);
 
@@ -189,18 +189,18 @@ td:last-child {
         return selfLink.Href;
     }
 
-    private static void WriteResourceAsHtml(HtmlTextWriter htmlWriter, Resource resource, IList<string> scripts, bool isRoot = true) {
+    private static void WriteResourceAsHtml(this HtmlTextWriter htmlWriter, Resource resource, IList<string> scripts, bool isRoot = true) {
         WriteHeader(htmlWriter, resource, isRoot);
 
         htmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, "content");
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
-        WriteSelfLink(htmlWriter, resource);
-        WriteData(htmlWriter, resource);
-        WriteLinks(htmlWriter, resource, scripts);
+        htmlWriter.WriteSelfLink(resource);
+        htmlWriter.WriteData(resource, scripts);
+        htmlWriter.WriteLinks(resource, scripts);
         htmlWriter.RenderEndTag(); //div
     }
 
-    private static void WriteSelfLink(HtmlTextWriter htmlWriter, Resource resource) {
+    private static void WriteSelfLink(this HtmlTextWriter htmlWriter, Resource resource) {
         var selfLink = resource.GetLink("self");
         if (selfLink == null) {
             return;
@@ -219,8 +219,8 @@ td:last-child {
         htmlWriter.RenderEndTag(); //br
     }
 
-    private static void WriteData(HtmlTextWriter htmlWriter, Resource resource) {
-        var properties = resource.GetType().GetProperties().Where(p => !p.Name.IsResourceProperty()).ToList();
+    private static void WriteData(this HtmlTextWriter htmlWriter, object o, IList<string> scripts) {
+        var properties = o.GetType().GetProperties().Where(p => !p.Name.IsResourceProperty()).ToList();
         
         if (!properties.Any()) {
             return;
@@ -230,7 +230,7 @@ td:last-child {
 
         foreach (var property in properties) {
             var name = property.Name.ToLower();
-            var value = property.GetValue(resource);
+            var value = property.GetValue(o);
             
             htmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
 
@@ -240,13 +240,13 @@ td:last-child {
 
             switch (value) {
                 case string stringValue:
-                    WriteValue(htmlWriter, stringValue);
+                    htmlWriter.WriteValue(stringValue, scripts);
                     break;
                 case IEnumerable enumerable:
-                    WriteEnumerable(htmlWriter, enumerable);
+                    htmlWriter.WriteEnumerable(enumerable, scripts);
                     break;
                 default:
-                    WriteValue(htmlWriter, value);
+                    htmlWriter.WriteValue(value, scripts);
                     break;
             }
             
@@ -256,19 +256,58 @@ td:last-child {
         htmlWriter.RenderEndTag(); //table
     }
 
-    private static void WriteEnumerable(HtmlTextWriter htmlWriter, IEnumerable enumerable) {
-        var values = (from object item in enumerable select item.ToString()).ToList();
-        WriteValue(htmlWriter, string.Join(", ", values));
+    private static void WriteEnumerable(this HtmlTextWriter htmlWriter, IEnumerable enumerable, IList<string> scripts) {
+        var list = enumerable.Cast<object>().ToList();
+        var firstItem = list.FirstOrDefault();
+        if (firstItem == null) {
+            return;
+        }
+        
+        if (firstItem is string || !firstItem.GetType().IsClass)  {
+            var values = (from object item in list select item.ToString()).ToList();
+            htmlWriter.WriteValue(string.Join(", ", values), scripts);
+            return;
+        }
+
+        foreach (var item in list) {
+            htmlWriter.WriteData(item, scripts);
+        }
     }
 
-    private static void WriteValue(HtmlTextWriter htmlWriter, object? value) {
+    private static void WriteValue(this HtmlTextWriter htmlWriter, object? value, IList<string> scripts) {
+        if (value == null) {
+            return;
+        }
+        
+        if (value is Resource resource) {
+            htmlWriter.WriteResourceAsHtml(resource, scripts, isRoot: false);
+            return;
+        }
+
+        if (value is string stringValue) {
+            htmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
+            htmlWriter.Write(stringValue);
+            htmlWriter.RenderEndTag(); //td
+            return;
+        }
+        
+        if (value.GetType().IsClass) {
+            htmlWriter.WriteData(value, scripts);
+            return;
+        }
+        
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
         htmlWriter.Write(value);
         htmlWriter.RenderEndTag(); //td
     }
 
-    private static void WriteLinks(HtmlTextWriter htmlWriter, Resource resource, ICollection<string> scripts) {
-        if (resource.Links.Count == 0) {
+    private static void WriteLinks(this HtmlTextWriter htmlWriter, Resource resource, ICollection<string> scripts) {
+        var linkCount = resource.Links.Count; 
+        if (resource.GetLink("self") != null) {
+            linkCount--;
+        }
+        
+        if (linkCount == 0) {
             return;
         }
 
@@ -285,6 +324,10 @@ td:last-child {
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Table);
 
         foreach (var link in resource.Links) {
+            if (link.Name == "self") {
+                continue;
+            }
+            
             htmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);
 
             htmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);

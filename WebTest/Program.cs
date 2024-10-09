@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options => {
     //register the formatters for the browser, json, and xml. Customer formatters can also be written and registered for other types
-    options.OutputFormatters.Insert(0, new ResourceHalJsonFormatter());
-    options.OutputFormatters.Insert(1, new ResourceHalXmlFormatter());
+    options.OutputFormatters.Insert(0, new ResourceSlysoftJsonFormatter());
+    options.OutputFormatters.Insert(1, new ResourceSlysoftXmlFormatter());
     options.OutputFormatters.Insert(2, new ResourceHtmlFormatter());
     options.RespectBrowserAcceptHeader = true;
 });
