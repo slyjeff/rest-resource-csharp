@@ -1,0 +1,12 @@
+# C#
+bin/
+obj/
+/packages/
+build/
+
+# Jet Brains
+riderModule.iml
+/_ReSharper.Caches/
+.idea
+RestResource.sln.DotSettings
+RestResource.sln.DotSettings.user
