@@ -6,12 +6,12 @@ namespace SlySoft.RestResource.Serializers;
 
 public static class ToJsonExtensions {
     /// <summary>
-    /// Create a resource, formatted as JSON using HAL, with extensions to support expanded links.
-    /// MIME type = application/slysoft.hal+json
+    /// Create a resource, formatted as JSON that contains links.
+    /// MIME type = application/slysoft+json
     /// </summary>
     /// <param name="resource">Resource that contains the data to represent as json</param>
-    /// <returns>JSON text in a HAL format (with slysoft extensions)</returns>
-    public static string ToSlySoftHalJson(this Resource resource) {
+    /// <returns>JSON text in slysoft+json format</returns>
+    public static string ToJson(this Resource resource) {
         return resource.CreateJObject().ToString();
     }
 

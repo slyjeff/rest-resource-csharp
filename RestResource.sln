@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlySoft.RestResource.Serial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlySoft.RestResource.Html", "SlySoft.RestResource.Html\SlySoft.RestResource.Html.csproj", "{BA867445-415A-4626-8689-9201CAC59386}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlySoft.RestResource.Client", "SlySoft.RestResource.Client\SlySoft.RestResource.Client.csproj", "{4161BF35-DDC4-4949-9D40-165FF1826770}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlySoft.RestResource.Client.Tests", "SlySoft.RestResource.Client.Tests\SlySoft.RestResource.Client.Tests.csproj", "{6EBFE59C-4FBB-4A81-930C-D4A991B685C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,14 @@ Global
 		{BA867445-415A-4626-8689-9201CAC59386}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA867445-415A-4626-8689-9201CAC59386}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA867445-415A-4626-8689-9201CAC59386}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4161BF35-DDC4-4949-9D40-165FF1826770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4161BF35-DDC4-4949-9D40-165FF1826770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4161BF35-DDC4-4949-9D40-165FF1826770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4161BF35-DDC4-4949-9D40-165FF1826770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBFE59C-4FBB-4A81-930C-D4A991B685C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBFE59C-4FBB-4A81-930C-D4A991B685C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBFE59C-4FBB-4A81-930C-D4A991B685C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBFE59C-4FBB-4A81-930C-D4A991B685C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

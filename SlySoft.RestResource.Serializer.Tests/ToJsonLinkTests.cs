@@ -18,7 +18,7 @@ public class ToJsonLinkTests {
             .Get("getLink", href);
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -42,7 +42,7 @@ public class ToJsonLinkTests {
             .Get("getLink2", href2);
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -67,7 +67,7 @@ public class ToJsonLinkTests {
             .Get("getLink", href, templated: true);
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -90,7 +90,7 @@ public class ToJsonLinkTests {
             .Get("getLink", href, timeout: 60);
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -117,7 +117,7 @@ public class ToJsonLinkTests {
 
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -147,7 +147,7 @@ public class ToJsonLinkTests {
 
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -174,7 +174,7 @@ public class ToJsonLinkTests {
             .EndBody();
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -198,7 +198,7 @@ public class ToJsonLinkTests {
             .EndBody();
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -222,7 +222,7 @@ public class ToJsonLinkTests {
             .EndBody();
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -245,7 +245,7 @@ public class ToJsonLinkTests {
             .Delete("deleteLink", href);
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {

@@ -25,6 +25,6 @@ public sealed class ResourceSlysoftJsonFormatter : TextOutputFormatter {
         context.HttpContext.Response.Headers["Content-Type"] ="application/slysoft+json";
 
         var resource = context.Object as Resource;
-        return response.WriteAsync(resource?.ToSlySoftHalJson());
+        return response.WriteAsync(resource?.ToJson());
     }
 }

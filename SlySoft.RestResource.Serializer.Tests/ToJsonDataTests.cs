@@ -26,7 +26,7 @@ public sealed class ToJsonDataTests {
         var resource = new StringIntResource { StringValue = stringValue, IntValue = intValue };
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -50,7 +50,7 @@ public sealed class ToJsonDataTests {
         var resource = new TestObjectResource{TestObject = testObject};
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -79,7 +79,7 @@ public sealed class ToJsonDataTests {
         var resource = new StringsResource { Strings = strings };
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
@@ -102,7 +102,7 @@ public sealed class ToJsonDataTests {
         var resource = new TestDataObjectsResource { DataObjects = dataObjects };
 
         //act
-        var json = resource.ToSlySoftHalJson();
+        var json = resource.ToJson();
 
         //assert
         var expected = new {
