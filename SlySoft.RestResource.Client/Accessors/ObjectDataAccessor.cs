@@ -2,14 +2,8 @@
 
 namespace SlySoft.RestResource.Client.Accessors;
 
-public abstract class ObjectDataAccessor : Accessor {
-    private readonly ObjectData _objectData;
-
-    protected ObjectDataAccessor(ObjectData objectData) {
-        _objectData = objectData;
-    }
-
+public abstract class ObjectDataAccessor(ObjectData objectData) : Accessor {
     protected override T? CreateData<T>(string name) where T : default {
-        return _objectData.GetData<T>(name);
+        return objectData.GetData<T>(name);
     }
 }

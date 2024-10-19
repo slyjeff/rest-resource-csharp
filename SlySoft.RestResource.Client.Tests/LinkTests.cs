@@ -1,6 +1,10 @@
-﻿/*using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using SlySoft.RestResource.Client.ResourceDeserializers;
+using SlySoft.RestResource.Client.Tests.Extensions;
+using SlySoft.RestResource.Serializers;
 using TestUtils;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace SlySoft.RestResource.Client.Tests;
 
@@ -16,12 +20,18 @@ public sealed class LinkTests {
     private readonly string _defaultValue = GenerateRandom.String();
     private readonly IList<string> _listOfValues = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
 
+    private class LinkTestTestResource : Resource {
+        public string LastName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+    }
+    
     [TestInitialize]
     public void SetUp() {
         _mockRestClient = new Mock<IRestClient>();
-        var linkTestResource = new Resource()
-            .Data("lastName", GenerateRandom.String())
-            .Data("firstName", GenerateRandom.String())
+        var linkTestResource = new LinkTestTestResource {
+                LastName = GenerateRandom.String(),
+                FirstName = GenerateRandom.String(),
+            }
             .Get("getAllUsers", "/user")
             .Get("getAllUsersWithTimeout", "/user", timeout: _timeout)
             .Get("getAllUsersTemplated", "/user/{id1}/{id2}", templated: true)
@@ -42,9 +52,10 @@ public sealed class LinkTests {
                 .Field(x => x.FirstName)
             .EndBody();
 
+        var linkTestClientResource = new ClientResource().FromJson(linkTestResource.ToJson());
 
-        _linkTest = ResourceAccessorFactory.CreateAccessor<ILinkTest>(linkTestResource, _mockRestClient.Object);
-        _linkTestAsync = ResourceAccessorFactory.CreateAccessor<ILinkTestAsync>(linkTestResource, _mockRestClient.Object);
+        _linkTest = ResourceAccessorFactory.CreateAccessor<ILinkTest>(linkTestClientResource, _mockRestClient.Object);
+        _linkTestAsync = ResourceAccessorFactory.CreateAccessor<ILinkTestAsync>(linkTestClientResource, _mockRestClient.Object);
     }
 
     [TestMethod]
@@ -74,14 +85,23 @@ public sealed class LinkTests {
         _mockRestClient.VerifyAsyncCall<IUserList>("/user");
     }
 
+    private class User {
+        public string LastName { get; set; } = string.Empty;
+    }
+    
+    private class UserListResource : Resource {
+        public IList<User> Users { get; set; } = new List<User>(); 
+    }
+    
     [TestMethod]
     public void GetMustReturnAccessor() {
         //arrange
         var user1LastName = GenerateRandom.String();
         var user2LastName = GenerateRandom.String();
-        var userListResource = TestData.CreateUserListResource(user1LastName, user2LastName);
-
-        var userListAccessor = ResourceAccessorFactory.CreateAccessor<IUserList>(userListResource, _mockRestClient.Object);
+        var userListResource = new UserListResource{ Users = new List<User>{new() {LastName = user1LastName}, new() {LastName = user2LastName}}};
+        var userListClientResource = new ClientResource().FromJson(userListResource.ToJson());
+        
+        var userListAccessor = ResourceAccessorFactory.CreateAccessor<IUserList>(userListClientResource, _mockRestClient.Object);
         _mockRestClient.SetupCall<IUserList>("/user").Returns(userListAccessor);
 
         //act
@@ -98,9 +118,10 @@ public sealed class LinkTests {
         //arrange
         var user1LastName = GenerateRandom.String();
         var user2LastName = GenerateRandom.String();
-        var userListResource = TestData.CreateUserListResource(user1LastName, user2LastName);
-
-        var userListAccessor = ResourceAccessorFactory.CreateAccessor<IUserList>(userListResource, _mockRestClient.Object);
+        var userListResource = new UserListResource{ Users = new List<User>{new() {LastName = user1LastName}, new() {LastName = user2LastName}}};
+        var userListClientResource = new ClientResource().FromJson(userListResource.ToJson());
+        
+        var userListAccessor = ResourceAccessorFactory.CreateAccessor<IUserList>(userListClientResource, _mockRestClient.Object);
         _mockRestClient.SetupCallAsync<IUserList>("/user").Returns(userListAccessor);
 
         //act
@@ -303,16 +324,23 @@ public sealed class LinkTests {
         _mockRestClient.VerifyCall<IUser>("/user", verb: "POST", expectedBody, timeout: _timeout);
     }
 
+    private class UserResource : Resource {
+        public string LastName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+    }
+    
     [TestMethod]
     public void PostMustReturnAccessor() {
         //arrange
         var lastName = GenerateRandom.String();
         var firstName = GenerateRandom.String();
-        var userResource = new Resource()
-            .Data("lastName", lastName)
-            .Data("firstName", firstName);
-
-        var userAccessor = ResourceAccessorFactory.CreateAccessor<IUser>(userResource, _mockRestClient.Object);
+        var userResource = new UserResource {
+            LastName = lastName,
+            FirstName = firstName
+        };
+        
+        var clientResource = new ClientResource().FromJson(userResource.ToJson()); 
+        var userAccessor = ResourceAccessorFactory.CreateAccessor<IUser>(clientResource, _mockRestClient.Object);
         _mockRestClient.SetupCall<IUser>("/user", verb: "POST").Returns(userAccessor);
 
         //act
@@ -328,11 +356,13 @@ public sealed class LinkTests {
         //arrange
         var lastName = GenerateRandom.String();
         var firstName = GenerateRandom.String();
-        var userResource = new Resource()
-            .Data("lastName", lastName)
-            .Data("firstName", firstName);
+        var userResource = new UserResource {
+            LastName = lastName,
+            FirstName = firstName
+        };
 
-        var userAccessor = ResourceAccessorFactory.CreateAccessor<IUser>(userResource, _mockRestClient.Object);
+        var clientResource = new ClientResource().FromJson(userResource.ToJson()); 
+        var userAccessor = ResourceAccessorFactory.CreateAccessor<IUser>(clientResource, _mockRestClient.Object);
         _mockRestClient.SetupCallAsync<IUser>("/user", verb: "POST").Returns(userAccessor);
 
         //act
@@ -342,4 +372,4 @@ public sealed class LinkTests {
         Assert.AreEqual(lastName, user.LastName);
         Assert.AreEqual(firstName, user.FirstName);
     }
-}*/
+}

@@ -1,22 +1,30 @@
-﻿/*using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using SlySoft.RestResource.Client.ResourceDeserializers;
+using SlySoft.RestResource.Serializers;
 using TestUtils;
+// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace SlySoft.RestResource.Client.Tests;
 
 [TestClass]
 public class ChangeTrackingTests {
     private static ISimpleResource CreateAccessor(Resource resource) {
-        return ResourceAccessorFactory.CreateAccessor<ISimpleResource>(resource, new Mock<IRestClient>().Object);
+        var clientResource = new ClientResource().FromJson(resource.ToJson()); 
+        return ResourceAccessorFactory.CreateAccessor<ISimpleResource>(clientResource, new Mock<IRestClient>().Object);
     }
 
+    private class MessageResource : Resource {
+        public string Message { get; set; } = string.Empty;
+    }
+    
     [TestMethod]
     public void MustBeAbleToUpdateAValue() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
 
         //act
@@ -32,7 +40,7 @@ public class ChangeTrackingTests {
     public void ChangingValueMustNotifyPropertyChanged() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
 
         var propertyChanged = false;
@@ -53,7 +61,7 @@ public class ChangeTrackingTests {
     public void HasDataChangesPropertyMustBeFalseIfNoDataChanged() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
 
         //act
@@ -67,7 +75,7 @@ public class ChangeTrackingTests {
     public void IsChangedPropertyMustBeTrueIfDataChanged() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
 
         //act
@@ -81,7 +89,7 @@ public class ChangeTrackingTests {
     public void IsChangedChangingMustNotifyPropertyChanged() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
 
         var isChangedChanged = false;
@@ -102,7 +110,7 @@ public class ChangeTrackingTests {
     public void IsChangedShouldNotBeChangedIfPropertyWasAlreadyChanged() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
         accessor.Message = GenerateRandom.String();
 
@@ -124,7 +132,7 @@ public class ChangeTrackingTests {
     public void IsChangedMustBeFalseIfDataChangeReverted() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
         accessor.Message = GenerateRandom.String();
 
@@ -139,7 +147,7 @@ public class ChangeTrackingTests {
     public void RevertDataChangesMustClearAllChangedValues() {
         //arrange
         var originalMessage = GenerateRandom.String();
-        var resource = new Resource().Data("message", originalMessage);
+        var resource = new MessageResource{Message = originalMessage};
         var accessor = CreateAccessor(resource);
         accessor.Message = GenerateRandom.String();
 
@@ -166,13 +174,20 @@ public class ChangeTrackingTests {
         Assert.AreEqual(originalMessage, accessor.Message);
     }
 
+    private class ChildResource : Resource {
+        public string ChildMessage { get; set; } = string.Empty;
+    }
+
+    private class ParentResource : Resource {
+        public ChildResource ChildInterface { get; set; } = new ChildResource();
+    }
+    
     [TestMethod]
     public void MustBeAbleToChangeValueOfChildAccessors() {
         //arrange
         var originalMessage = GenerateRandom.String();
         var child = new ChildResource { ChildMessage = originalMessage };
-        
-        var resource = new Resource().Data("childInterface", child);
+        var resource = new ParentResource { ChildInterface = child };
         var parent = CreateAccessor(resource);
 
         //act
@@ -188,8 +203,7 @@ public class ChangeTrackingTests {
         //arrange
         var originalMessage = GenerateRandom.String();
         var child = new ChildResource { ChildMessage = originalMessage };
-        
-        var resource = new Resource().Data("childInterface", child);
+        var resource = new ParentResource { ChildInterface = child };
         var parent = CreateAccessor(resource);
 
         var childMessageChanged = false;
@@ -213,8 +227,7 @@ public class ChangeTrackingTests {
         //arrange
         var originalMessage = GenerateRandom.String();
         var child = new ChildResource { ChildMessage = originalMessage };
-        
-        var resource = new Resource().Data("childInterface", child);
+        var resource = new ParentResource { ChildInterface = child };
         var parent = CreateAccessor(resource);
 
         var parentIsChangedChanged = false;
@@ -238,8 +251,7 @@ public class ChangeTrackingTests {
         //arrange
         var originalMessage = GenerateRandom.String();
         var child = new ChildResource { ChildMessage = originalMessage };
-
-        var resource = new Resource().Data("childInterface", child);
+        var resource = new ParentResource { ChildInterface = child };
         var parent = CreateAccessor(resource);
 
         var newMessage = GenerateRandom.String();
@@ -252,11 +264,15 @@ public class ChangeTrackingTests {
         Assert.AreEqual(originalMessage, parent.ChildInterface.ChildMessage);
     }
 
+    private class StringsResource : Resource {
+        public IList<string> Strings { get; set; } = new List<string>();
+    }
+    
     [TestMethod]
     public void ChangingListValueMustNotifyOfCollectionChanged() {
         //arrange
         var originalStrings = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
-        var resource = new Resource().Data("strings", originalStrings);
+        var resource = new StringsResource { Strings = originalStrings };
         var accessor = CreateAccessor(resource);
 
         var collectionChanged = false;
@@ -275,7 +291,7 @@ public class ChangeTrackingTests {
     public void ChangingListValueMustIsChangedToFalse() {
         //arrange
         var originalStrings = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
-        var resource = new Resource().Data("strings", originalStrings);
+        var resource = new StringsResource { Strings = originalStrings };
         var accessor = CreateAccessor(resource);
 
         var isChangedChanged = false;
@@ -297,7 +313,7 @@ public class ChangeTrackingTests {
     public void RevertingListValueMustSetIsChangedToFalse() {
         //arrange
         var originalStrings = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
-        var resource = new Resource().Data("strings", originalStrings);
+        var resource = new StringsResource { Strings = originalStrings };
         var accessor = CreateAccessor(resource);
 
         //act
@@ -311,7 +327,7 @@ public class ChangeTrackingTests {
     public void RejectChangesMustRevertList() {
         //arrange
         var originalStrings = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
-        var resource = new Resource().Data("strings", originalStrings);
+        var resource = new StringsResource { Strings = originalStrings };
         var accessor = CreateAccessor(resource);
 
         //act
@@ -321,12 +337,15 @@ public class ChangeTrackingTests {
         Assert.AreEqual(originalStrings[1], accessor.Strings[1]);
     }
 
+    private class ParentOfChildrenResource : Resource {
+        public IList<ChildResource> ChildInterfaces { get; set; } = new List<ChildResource>();
+    } 
+    
     [TestMethod]
     public void MustBeAbleToChangeValueOfChildAccessorInAList() {
         //arrange
         var originalChildren = new List<ChildResource> { new(), new(), new() };
-
-        var resource = new Resource().Data("ChildInterfaces", originalChildren);
+        var resource = new ParentOfChildrenResource { ChildInterfaces = originalChildren };
         var parent = CreateAccessor(resource);
 
         //act
@@ -342,8 +361,7 @@ public class ChangeTrackingTests {
         //arrange
         var originalMessage = GenerateRandom.String();
         var originalChildren = new List<ChildResource> { new(), new() { ChildMessage = originalMessage }, new() };
-
-        var resource = new Resource().Data("ChildInterfaces", originalChildren);
+        var resource = new ParentOfChildrenResource { ChildInterfaces = originalChildren };
         var parent = CreateAccessor(resource);
 
         var childMessageChanged = false;
@@ -366,7 +384,7 @@ public class ChangeTrackingTests {
     public void ChangingValueOnAChildAccessorInAListMustChangeIsChangedOfParent() {
         //arrange
         var originalChildren = new List<ChildResource> { new(), new(), new() };
-        var resource = new Resource().Data("ChildInterfaces", originalChildren);
+        var resource = new ParentOfChildrenResource { ChildInterfaces = originalChildren };
         var parent = CreateAccessor(resource);
 
         var parentIsChangedChanged = false;
@@ -390,8 +408,7 @@ public class ChangeTrackingTests {
         //arrange
         var originalMessage = GenerateRandom.String();
         var originalChildren = new List<ChildResource> { new(), new() { ChildMessage = originalMessage }, new() };
-
-        var resource = new Resource().Data("ChildInterfaces", originalChildren);
+        var resource = new ParentOfChildrenResource { ChildInterfaces = originalChildren };
         var parent = CreateAccessor(resource);
 
         var newMessage = GenerateRandom.String();
@@ -403,4 +420,4 @@ public class ChangeTrackingTests {
         //assert
         Assert.AreEqual(originalMessage, parent.ChildInterfaces[1].ChildMessage);
     }
-}*/
+}
