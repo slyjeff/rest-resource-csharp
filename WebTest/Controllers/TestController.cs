@@ -92,7 +92,7 @@ public sealed class TestController  : ControllerBase {
     public IActionResult Post([FromBody] PostBody body) {
         var resource = new PostResource{
             Parameter1 = body.Parameter1,
-            Parameter2 = body.Parameter1
+            Parameter2 = body.Parameter2
         };
 
         return StatusCode(200, resource);

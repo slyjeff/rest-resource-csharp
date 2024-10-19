@@ -15,7 +15,7 @@ public interface IResourceAccessor {
     /// <summary>
     /// Deserialized Resource received from a call
     /// </summary>
-    ClientResource ClientResource { get; }
+    ClientResource Resource { get; }
 
     /// <summary>
     /// Make a REST call passing in a link name and parameters as a dictionary
@@ -38,26 +38,26 @@ public interface IResourceAccessor {
 
 public abstract class ResourceAccessor : Accessor, IResourceAccessor {
     protected ResourceAccessor(ClientResource clientResource, IRestClient restClient) {
-        ClientResource = clientResource;
+        Resource = clientResource;
         RestClient = restClient;
     }
 
-    public ClientResource ClientResource { get; }
+    public ClientResource Resource { get; }
     internal IRestClient RestClient { get; }
 
     protected override T? CreateData<T>(string name) where T : default {
-        return ClientResource.GetData<T>(name, RestClient);
+        return Resource.GetData<T>(name, RestClient);
     }
 
     protected IParameterInfo GetParameterInfo(string linkName, string parameterName) {
-        var link = ClientResource.GetLink(linkName);
+        var link = Resource.GetLink(linkName);
         return link == null 
             ? new LinkParameterInfo() 
             : new LinkParameterInfo(link.GetParameter(parameterName));
     }
 
     protected bool LinkCheck(string name) {
-        return ClientResource.GetLink(name) != null;
+        return Resource.GetLink(name) != null;
     }
 
     public T CallRestLink<T>(string name, IDictionary<string, object?> parameters) {
@@ -98,7 +98,7 @@ public abstract class ResourceAccessor : Accessor, IResourceAccessor {
     }
 
     private CallableLink CreateLink(string name, IDictionary<string, object?> parameters) {
-        var link = ClientResource.GetLink(name) ?? throw new CallLinkException($"Link {name} not found in resource.");
+        var link = Resource.GetLink(name) ?? throw new CallLinkException($"Link {name} not found in resource.");
 
         var url = link.Templated ? link.Href.ResolveTemplatedUrl(parameters) : link.Href;
 

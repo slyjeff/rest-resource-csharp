@@ -50,6 +50,22 @@ public interface IRestClient {
     CreateBodyDelegate CreateBody { get; set; }
 
     /// <summary>
+    /// Get a resource
+    /// </summary>
+    /// <typeparam name="T">How to return the result. String returns the content as text, Resource returns a resource object, an interface will create a typed accessor to wrap the resource</typeparam>
+    /// <param name="url">URL of the call</param>
+    /// <returns>content of the service call</returns>
+    T Get<T>(string? url = null);
+
+    /// <summary>
+    /// Get a resource asynchronously
+    /// </summary>
+    /// <typeparam name="T">How to return the result. String returns the content as text, Resource returns a resource object, an interface will create a typed accessor to wrap the resource</typeparam>
+    /// <param name="url">URL of the call</param>
+    /// <returns>content of the service call</returns>
+    Task<T> GetAsync<T>(string? url = null);
+    
+    /// <summary>
     /// Make a synchronous web service call, returning the result as the type specified
     /// </summary>
     /// <typeparam name="T">How to return the result. String returns the content as text, Resource returns a resource object, an interface will create a typed accessor to wrap the resource</typeparam>
@@ -145,6 +161,26 @@ public sealed class RestClient : IRestClient {
         return new StringContent(content, Encoding.UTF8, contentType);
     };
 
+    /// <summary>
+    /// Get a resource
+    /// </summary>
+    /// <typeparam name="T">How to return the result. String returns the content as text, Resource returns a resource object, an interface will create a typed accessor to wrap the resource</typeparam>
+    /// <param name="url">URL of the call</param>
+    /// <returns>content of the service call</returns>
+    public T Get<T>(string? url = null) {
+        return Call<T>(url, null);
+    }    
+
+    /// <summary>
+    /// Get a resource asynchronously
+    /// </summary>
+    /// <typeparam name="T">How to return the result. String returns the content as text, Resource returns a resource object, an interface will create a typed accessor to wrap the resource</typeparam>
+    /// <param name="url">URL of the call</param>
+    /// <returns>content of the service call</returns>
+    public Task<T> GetAsync<T>(string? url = null) {
+        return CallAsync<T>(url, null);
+    }    
+    
     /// <summary>
     /// Make a synchronous web service call
     /// </summary>

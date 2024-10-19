@@ -6,7 +6,7 @@ namespace SlySoft.RestResource.Client.Extensions;
 
 internal static class PropertyAndMethodExtensions {
     public static bool IsFromResourceAccessorInterface(this PropertyInfo property) {
-        return property.Name is nameof(IResourceAccessor.ClientResource)
+        return property.Name is nameof(IResourceAccessor.Resource)
             or nameof(IEditableAccessor.IsChanged);
     }
 
