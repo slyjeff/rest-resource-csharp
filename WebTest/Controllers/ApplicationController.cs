@@ -11,12 +11,14 @@ public sealed class ApplicationController  : ControllerBase {
         public string Hal { get; set; } = "This library is based on HAL, bot the json and xml variations, but should be flexible enough to use any format.";
         public string AcceptHeader { get; set; } = "Change how this data is retrieved by changing the accept header in the request: text/html, application/json, application/xml.";
     }
-    
+
     [HttpGet]
     public IActionResult GetApplication() {
         var resource = new ApiResource()
             .Get("self", "/")
-            .Get("getTests", "/test");
+            .Get("getTests", "/test")
+            .Get("getList", "/list");
+
 
         return StatusCode(200, resource);
     }
