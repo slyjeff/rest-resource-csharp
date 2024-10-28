@@ -64,7 +64,7 @@ public interface IRestClient {
     /// <param name="url">URL of the call</param>
     /// <returns>content of the service call</returns>
     Task<T> GetAsync<T>(string? url = null);
-    
+
     /// <summary>
     /// Make a synchronous web service call, returning the result as the type specified
     /// </summary>
@@ -107,7 +107,7 @@ public sealed class RestClient : IRestClient {
     }
 
     /// <summary>
-    /// Create a RestClient 
+    /// Create a RestClient
     /// </summary>
     /// <param name="httpClient">HttpClient to use for making network calls</param>
     public RestClient(HttpClient httpClient) {
@@ -145,19 +145,19 @@ public sealed class RestClient : IRestClient {
     /// Deserializers that can convert a HttpResponseMessage to a Resource- slysoft+json is already registered, but can be removed
     /// </summary>
     public IList<IResourceDeserializer> ResourceDeserializers { get; } = new List<IResourceDeserializer> {
-        new HalJsonDeserializer(),
+        new jsonDeserializer(),
     };
 
     /// <summary>
     /// Method used to serialize content- defaults to converting to json
     /// </summary>
     public CreateBodyDelegate CreateBody { get; set; } = (body, verb) => {
-        var contentType = verb == "PATCH" 
-            ? "application/merge-patch+json" 
+        var contentType = verb == "PATCH"
+            ? "application/merge-patch+json"
             : "application/json";
-        
+
         var content = JsonConvert.SerializeObject(body);
-        
+
         return new StringContent(content, Encoding.UTF8, contentType);
     };
 
@@ -169,7 +169,7 @@ public sealed class RestClient : IRestClient {
     /// <returns>content of the service call</returns>
     public T Get<T>(string? url = null) {
         return Call<T>(url, null);
-    }    
+    }
 
     /// <summary>
     /// Get a resource asynchronously
@@ -179,8 +179,8 @@ public sealed class RestClient : IRestClient {
     /// <returns>content of the service call</returns>
     public Task<T> GetAsync<T>(string? url = null) {
         return CallAsync<T>(url, null);
-    }    
-    
+    }
+
     /// <summary>
     /// Make a synchronous web service call
     /// </summary>

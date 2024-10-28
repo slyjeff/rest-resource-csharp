@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SlySoft.RestResource.Client.ResourceDeserializers;
+using SlySoft.RestResource.Client.Tests.Utils;
 using SlySoft.RestResource.Serializers;
 using TestUtils;
 // ReSharper disable UnusedAutoPropertyAccessor.Local

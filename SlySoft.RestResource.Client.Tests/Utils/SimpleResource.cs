@@ -1,7 +1,7 @@
 ﻿using SlySoft.RestResource.Client.Accessors;
 using TestUtils;
 
-namespace SlySoft.RestResource.Client.Tests;
+namespace SlySoft.RestResource.Client.Tests.Utils;
 
 public enum OptionEnum { Option1, Option2 };
 
@@ -20,6 +20,24 @@ public interface ISimpleResource : IEditableAccessor {
 }
 
 public sealed class SimpleResource : Resource {
+    public SimpleResource() {
+        Child = new ChildResource();
+        Child.Get("self", "/child/1");
+
+        ChildInterface = new ChildResource();
+        ChildInterface.Get("self", "/child/1");
+
+        Children =  new List<ChildResource> { new(), new(), new() };
+        Children[0].Get("self", "/child/1");
+        Children[1].Get("self", "/child/2");
+        Children[2].Get("self", "/child/3");
+
+        ChildInterfaces =  new List<ChildResource> { new(), new(), new() };
+        ChildInterfaces[0].Get("self", "/child/1");
+        ChildInterfaces[1].Get("self", "/child/2");
+        ChildInterfaces[2].Get("self", "/child/3");
+    }
+
     public string Message { get; set; } = GenerateRandom.String();
     public int Number { get; set; } = GenerateRandom.Int();
     public OptionEnum Option { get; set; } = OptionEnum.Option2;
@@ -27,18 +45,19 @@ public sealed class SimpleResource : Resource {
     public DateTime Date { get; set; } = DateTime.Now;
     public IList<string> Strings { get; } = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
     public IList<int> Numbers { get; } = new List<int> { GenerateRandom.Int(), GenerateRandom.Int(), GenerateRandom.Int() };
-    public ChildResource Child { get; } = new();
-    public ChildResource ChildInterface { get; } = new ChildResource();
-    public IList<ChildResource> Children { get; } = new List<ChildResource> { new(), new(), new() };
-    public IList<ChildResource> ChildInterfaces { get; } = new List<ChildResource> { new ChildResource(), new ChildResource(), new ChildResource() };
+    public ChildResource Child { get; }
+    public ChildResource ChildInterface { get; }
+    public IList<ChildResource> Children { get; }
+    public IList<ChildResource> ChildInterfaces { get; }
 }
 
 public interface IChildResource {
     string ChildMessage { get; set; }
     int ChildNumber { get; }
+    Task Self();
 }
 
-public sealed class ChildResource {
+public sealed class ChildResource : Resource {
     public string ChildMessage { get; set; } = GenerateRandom.String();
     public int ChildNumber { get; set; } = GenerateRandom.Int();
 }

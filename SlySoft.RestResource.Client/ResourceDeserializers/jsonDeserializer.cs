@@ -2,7 +2,7 @@
 
 namespace SlySoft.RestResource.Client.ResourceDeserializers;
 
-internal class HalJsonDeserializer : IResourceDeserializer {
+internal class jsonDeserializer : IResourceDeserializer {
     public bool CanDeserialize(HttpResponseMessage response) {
         var contentType = response.GetContentType();
         if (!contentType.StartsWith("application", StringComparison.CurrentCultureIgnoreCase)) {

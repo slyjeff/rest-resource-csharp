@@ -152,4 +152,16 @@ public class ClientTests {
         //assert
         Assert.AreEqual(testDateTime, dateTimeResult.Value);
     }
+
+    [TestMethod]
+    public async Task MustSupportLinksInChildObjects() {
+        //arrange
+        var application = await _restClient.GetAsync<IApplicationResource>();
+
+        //act
+        var list = await application.GetList();
+
+        //assert
+        Assert.AreEqual(9, list.Items.Count);
+    }
 }

@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-// ReSharper disable UnusedMember.Global
+﻿// ReSharper disable UnusedMember.Global
 
 namespace SlySoft.RestResource.Client.Accessors;
 
-public abstract class Accessor : EditableAccessor {
-    protected readonly ObjectData CachedData = new ();
+public abstract class Accessor(IRestClient restClient) : EditableAccessor {
+    private readonly ObjectData _cachedData = new ();
     protected readonly ObjectData UpdateValues = new();
     private readonly IList<IEditableAccessor> _editableAccessors = new List<IEditableAccessor>();
+    internal IRestClient RestClient { get; } = restClient;
 
     public override void RejectChanges() {
         foreach (var editableAccessor in _editableAccessors) {
@@ -49,10 +47,10 @@ public abstract class Accessor : EditableAccessor {
     }
 
     private T? GetOriginalData<T>(string name) {
-        if (CachedData.TryGetValue(name, out var value)) {
+        if (_cachedData.TryGetValue(name, out var value)) {
             return (T?)value;
         }
-        
+
         var newData = CreateData<T>(name);
 
         if (newData is IEditableAccessor editableAccessor) {
@@ -62,9 +60,9 @@ public abstract class Accessor : EditableAccessor {
             };
         }
 
-        CachedData[name] = newData;
+        _cachedData[name] = newData;
 
-        return (T?)CachedData[name];
+        return (T?)_cachedData[name];
     }
 
     protected abstract T? CreateData<T>(string name);

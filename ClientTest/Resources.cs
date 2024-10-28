@@ -5,6 +5,8 @@ namespace ClientTest;
 public interface IApplicationResource {
     string Information { get; }
     Task<ITestsResource> GetTests();
+
+    Task<IListResource> GetList();
 }
 
 public interface ITestsResource : IResourceAccessor {
@@ -33,4 +35,13 @@ public interface IPostResultResource {
 
 public interface IListResultResource {
     public IList<string> List { get; }
+}
+
+public interface IListResource : IResourceAccessor {
+    IList<IListItem> Items { get; set; }
+}
+
+public interface IListItem {
+    string Id { get; set; }
+    Task<string> Self();
 }

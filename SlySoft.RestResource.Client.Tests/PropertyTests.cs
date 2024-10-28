@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using SlySoft.RestResource.Client.ResourceDeserializers;
+using SlySoft.RestResource.Client.Tests.Utils;
 using SlySoft.RestResource.Serializers;
 
 namespace SlySoft.RestResource.Client.Tests;
@@ -14,7 +15,7 @@ public sealed class PropertyTests {
         return ResourceAccessorFactory.CreateAccessor<ISimpleResource>(clientResource, new Mock<IRestClient>().Object);
     }
 
-   
+
     [TestMethod]
     public void MustBeAbleToAccessAString() {
         //arrange
@@ -124,7 +125,7 @@ public sealed class PropertyTests {
     public void MustBeAbleToAccessAnInterface() {
         //arrange
         var source = new SimpleResource();
-   
+
         //act
         var destination = CreateAccessor(source);
 

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 using SlySoft.RestResource.Client.Accessors;
 using SlySoft.RestResource.Client.Extensions;
 
 namespace SlySoft.RestResource.Client.Generators;
 
-internal sealed class ObjectDataAccessorGenerator : AccessorGenerator {
-    public ObjectDataAccessorGenerator(Type interfaceType) : base(interfaceType, typeof(ObjectDataAccessor)) {
-    }
-
+internal sealed class ObjectDataAccessorGenerator(Type interfaceType) : AccessorGenerator(interfaceType, typeof(ObjectDataAccessor)) {
     public Type GeneratedType() {
         try {
             AddConstructor();
@@ -27,7 +22,7 @@ internal sealed class ObjectDataAccessorGenerator : AccessorGenerator {
     }
 
     private void AddConstructor() {
-        Type[] constructorArgs = { typeof(ObjectData) };
+        Type[] constructorArgs = [typeof(ObjectData), typeof(IRestClient)];
         var constructorBuilder = TypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorArgs);
 
         var codeGenerator = constructorBuilder.GetILGenerator();
@@ -43,6 +38,7 @@ internal sealed class ObjectDataAccessorGenerator : AccessorGenerator {
 
         codeGenerator.Emit(OpCodes.Ldarg_0);        //push 'this' onto the stack
         codeGenerator.Emit(OpCodes.Ldarg_1);        //push resource onto the stack
+        codeGenerator.Emit(OpCodes.Ldarg_2);        //push restClient onto the stack
         codeGenerator.Emit(OpCodes.Call, baseCtor); //call the base constructor
         codeGenerator.Emit(OpCodes.Ret);            //return
     }

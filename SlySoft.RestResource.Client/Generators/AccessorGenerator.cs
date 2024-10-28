@@ -1,15 +1,14 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
-namespace SlySoft.RestResource.Client.Generators; 
+namespace SlySoft.RestResource.Client.Generators;
 
 internal abstract class AccessorGenerator {
     private static ModuleBuilder? _moduleBuilder;
 
     protected AccessorGenerator(Type interfaceType, Type accessorType) {
         InterfaceType = interfaceType;
-    
+
         if (!interfaceType.IsInterface) {
             throw new CreateAccessorException($"Accessor must be based on an interface. {InterfaceType.Name} is not an interface");
         }
@@ -42,7 +41,7 @@ internal abstract class AccessorGenerator {
 
     protected void AddProperty(PropertyInfo property) {
         var propertyBuilder = TypeBuilder.DefineProperty(property.Name, PropertyAttributes.None, property.PropertyType, null);
-        
+
         if (property.CanRead) {
             propertyBuilder.SetGetMethod(CreateGetter(property));
         }
@@ -72,7 +71,7 @@ internal abstract class AccessorGenerator {
         codeGenerator.Emit(OpCodes.Ldstr, property.Name);          //push the name of the property onto the stack
         codeGenerator.Emit(OpCodes.Callvirt, typedGetDataMethod);  //call the the "GetData" method
         codeGenerator.Emit(OpCodes.Ret);                           //return
-        
+
         return methodBuilder;
     }
 

@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
-using System.Threading.Tasks;
 using SlySoft.RestResource.Client.Accessors;
 using SlySoft.RestResource.Client.Extensions;
 
 namespace SlySoft.RestResource.Client.Generators;
 
-internal sealed class ResourceAccessorGenerator<T> : AccessorGenerator {
-    public ResourceAccessorGenerator() : base(typeof(T), typeof(ResourceAccessor)) {
-    }
-
+internal sealed class ResourceAccessorGenerator<T>() : AccessorGenerator(typeof(T), typeof(ResourceAccessor)) {
     public Type GeneratedType() {
         try {
             AddConstructor();
@@ -30,7 +23,7 @@ internal sealed class ResourceAccessorGenerator<T> : AccessorGenerator {
     }
 
     private void AddConstructor() {
-        Type[] constructorArgs = { typeof(ClientResource), typeof(IRestClient) };
+        Type[] constructorArgs = [typeof(ClientResource), typeof(IRestClient)];
         var constructorBuilder = TypeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, constructorArgs);
 
         var codeGenerator = constructorBuilder.GetILGenerator();
@@ -173,7 +166,7 @@ internal sealed class ResourceAccessorGenerator<T> : AccessorGenerator {
         codeGenerator.Emit(OpCodes.Ret);                                //return
     }
 
-    public static void CreateDictionaryInLocalVariable(ILGenerator codeGenerator, ParameterInfo[] parameters) {
+    private static void CreateDictionaryInLocalVariable(ILGenerator codeGenerator, ParameterInfo[] parameters) {
         var dictionaryType = typeof(Dictionary<string, object?>);
         var dictionaryConstructor = dictionaryType.GetConstructor(Array.Empty<Type>());
 
@@ -201,7 +194,7 @@ internal sealed class ResourceAccessorGenerator<T> : AccessorGenerator {
             codeGenerator.Emit(OpCodes.Ldstr, parameter.Name);            //load the parameter name
             codeGenerator.Emit(OpCodes.Ldarg, parameterLocation++);       //load the value of the parameter
             if (parameter.ParameterType.IsValueType) {
-                codeGenerator.Emit(OpCodes.Box, parameter.ParameterType); //box value types        
+                codeGenerator.Emit(OpCodes.Box, parameter.ParameterType); //box value types
             }
             codeGenerator.Emit(OpCodes.Callvirt, dictionaryAddMethod);    //call the add method of the dictionary
         }

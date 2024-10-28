@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SlySoft.RestResource.Client.Extensions;
+﻿using SlySoft.RestResource.Client.Extensions;
 
 // ReSharper disable UnusedMember.Global
 
@@ -36,14 +32,8 @@ public interface IResourceAccessor {
     Task<T> CallRestLinkAsync<T>(string name, IDictionary<string, object?> parameters);
 }
 
-public abstract class ResourceAccessor : Accessor, IResourceAccessor {
-    protected ResourceAccessor(ClientResource clientResource, IRestClient restClient) {
-        Resource = clientResource;
-        RestClient = restClient;
-    }
-
-    public ClientResource Resource { get; }
-    internal IRestClient RestClient { get; }
+public abstract class ResourceAccessor(ClientResource clientResource, IRestClient restClient) : Accessor(restClient), IResourceAccessor {
+    public ClientResource Resource { get; } = clientResource;
 
     protected override T? CreateData<T>(string name) where T : default {
         return Resource.GetData<T>(name, RestClient);
@@ -51,8 +41,8 @@ public abstract class ResourceAccessor : Accessor, IResourceAccessor {
 
     protected IParameterInfo GetParameterInfo(string linkName, string parameterName) {
         var link = Resource.GetLink(linkName);
-        return link == null 
-            ? new LinkParameterInfo() 
+        return link == null
+            ? new LinkParameterInfo()
             : new LinkParameterInfo(link.GetParameter(parameterName));
     }
 
@@ -84,17 +74,11 @@ public abstract class ResourceAccessor : Accessor, IResourceAccessor {
         }
     }
 
-    private readonly struct CallableLink {
-        public CallableLink(string url, string verb, IDictionary<string, object?>? body = null, int timeout = 0) {
-            Url = url;
-            Verb = verb;
-            Body = body;
-            Timeout = timeout;
-        }
-        public readonly string Url;
-        public readonly string Verb;
-        public readonly IDictionary<string, object?>? Body;
-        public readonly int Timeout;
+    private readonly struct CallableLink(string url, string verb, IDictionary<string, object?>? body = null, int timeout = 0) {
+        public readonly string                        Url     = url;
+        public readonly string                        Verb    = verb;
+        public readonly IDictionary<string, object?>? Body    = body;
+        public readonly int                           Timeout = timeout;
     }
 
     private CallableLink CreateLink(string name, IDictionary<string, object?> parameters) {

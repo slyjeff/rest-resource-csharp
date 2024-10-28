@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace SlySoft.RestResource.Client.ResourceDeserializers;
 
-public static class FromHalJsonExtensions {
+public static class FromJsonExtensions {
     /// <summary>
     /// Populate a resource from a JSON string in slysoft.hal+json or hal+json format
     /// </summary>
@@ -60,6 +60,13 @@ public static class FromHalJsonExtensions {
                     objectData[item.Key] = jArray.ToList();
                     break;
                 case JObject jObject: {
+                    if (jObject["_links"] != null) {
+                        var clientResource = new ClientResource();
+                        clientResource.FromJson(jObject);
+                        objectData[item.Key] = clientResource;
+                        continue;
+                    }
+
                     var childObjectData = new ObjectData();
                     childObjectData.PopulateFromJObject(jObject);
                     objectData[item.Key] = childObjectData;
@@ -77,6 +84,17 @@ public static class FromHalJsonExtensions {
 
         if (firstValue is JValue) {
             return jArray.OfType<JValue>().Select(x => x.Value).ToList();
+        }
+
+        if (firstValue["_links"] != null) {
+            var resourceList = new ResourceListData();
+            foreach (var item in jArray.OfType<JObject>()) {
+                var clientResource = new ClientResource();
+                clientResource.FromJson(item);
+                resourceList.Add(clientResource);
+            }
+
+            return resourceList;
         }
 
         var list = new ListData();
