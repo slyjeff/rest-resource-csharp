@@ -1,4 +1,4 @@
-﻿namespace TestUtils; 
+﻿namespace TestUtils;
 
 public enum UserPosition { Standard, Admin }
 
@@ -10,4 +10,6 @@ public sealed class User {
     public int YearsEmployed { get; set; } = GenerateRandom.Int(1, 15);
     public bool IsRegistered { get; set; }
     public bool? IsRegisteredNullable { get; set; }
+
+    public DateTime DateCreated { get; set; } = DateTime.Now;
 }

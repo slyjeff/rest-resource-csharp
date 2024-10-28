@@ -67,14 +67,14 @@ public interface IConfigureQuery<T> {
     /// </summary>
     /// <returns>The configuration class so more values can be configured</returns>
     public IConfigureQuery<T> AllParameters();
-    
+
     /// <summary>
     /// Do not include this property when mapping all (no, all does not mean all)
     /// </summary>
     /// <param name="mapAction">Expression to tell the data map which value to exclude- example: x => x.Name</param>
     /// <returns>The configuration class so more values can be configured</returns>
     public IConfigureQuery<T> Exclude(Expression<Func<T, object>> mapAction);
-    
+
     /// <summary>
     /// Finish configuring the query
     /// </summary>
@@ -103,7 +103,7 @@ internal sealed class ConfigureQuery<T> : IConfigureQuery<T> {
             listOfValuesAsStrings = listOfValues.Select(x => x?.ToString() ?? string.Empty).ToList();
         }
 
-        AddParameter(parameterName, type, defaultValue?.ToString(), listOfValuesAsStrings);
+        AddParameter(parameterName, type, defaultValue.DefaultValueToString(), listOfValuesAsStrings);
 
         return this;
     }

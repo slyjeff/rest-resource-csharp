@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestUtils;
 
 namespace SlySoft.RestResource.Tests;
@@ -148,6 +149,24 @@ public class PostTests {
         var linkParameter = link.GetParameter("position");
         Assert.IsNotNull(linkParameter);
         Assert.AreEqual("Admin", linkParameter.DefaultValue);
+    }
+
+    [TestMethod]
+    public void QueryMappingMustAllowSettingOfDateDefaultValues() {
+        //arrange
+        var defaultDate = DateTime.Now.AddDays(-1);
+
+        //act
+        var resource = new Resource()
+            .Post<User>("createUser", "/api/user")
+                .Field(x => x.DateCreated, defaultValue: defaultDate)
+            .EndBody();
+        //assert
+        var link = resource.GetLink("createUser");
+        Assert.IsNotNull(link);
+        var queryParameter = link.GetParameter("dateCreated");
+        Assert.IsNotNull(queryParameter);
+        Assert.AreEqual(defaultDate.ToString("s"), queryParameter.DefaultValue);
     }
 
     [TestMethod]

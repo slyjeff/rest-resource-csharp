@@ -9,7 +9,7 @@ public sealed class TestController  : ControllerBase {
     private class TestResource : Resource {
         public string Description { get; } = "Tests used by the ClientTest app.";
     }
-    
+
     [HttpGet]
     public IActionResult GetTests() {
         var resource = new TestResource()
@@ -33,7 +33,10 @@ public sealed class TestController  : ControllerBase {
                 .Field(x => x.Value, defaultValue: false)
             .EndBody()
             .PostWithAllFields<BodyWithInt>("int", "test/int")
-            .PostWithAllFields<BodyWithEnum>("enum", "test/enum");
+            .PostWithAllFields<BodyWithEnum>("enum", "test/enum")
+            .Patch<BodyWithDateTime>("dateTime", "test/datetime")
+                .Field(x => x.Value, defaultValue: DateTime.Now)
+            .EndBody();
 
         return StatusCode(200, resource);
     }
@@ -52,7 +55,7 @@ public sealed class TestController  : ControllerBase {
         public string Value1 { get; set; } = "";
         public string Value2 { get; set; } = "";
     }
-    
+
     [HttpGet("templated/{value1}/{value2}")]
     public IActionResult TemplatedGet(string value1, string value2) {
         var resource = new TemplatedGetResource {
@@ -66,8 +69,8 @@ public sealed class TestController  : ControllerBase {
     private class QueryResource : Resource {
         public string Parameter1 { get; set; } = "";
         public string Parameter2 { get; set; } = "";
-    }    
-    
+    }
+
     [HttpGet("query")]
     public IActionResult Query([FromQuery] string parameter1, [FromQuery] string parameter2) {
         var resource = new QueryResource{
@@ -86,8 +89,8 @@ public sealed class TestController  : ControllerBase {
     private class PostResource : Resource {
         public string Parameter1 { get; set; } = "";
         public string Parameter2 { get; set; } = "";
-    }      
-    
+    }
+
     [HttpPost("post")]
     public IActionResult Post([FromBody] PostBody body) {
         var resource = new PostResource{
@@ -110,7 +113,7 @@ public sealed class TestController  : ControllerBase {
     private class ListResource : Resource {
         public IList<string> List { get; set; } = new List<string>();
     }
-    
+
     [HttpPut("list")]
     public IActionResult List([FromBody] ListBody body) {
         var resource = new ListResource {
@@ -128,13 +131,13 @@ public sealed class TestController  : ControllerBase {
     private class BoolResource : Resource {
         public bool Bool { get; set; }
     }
-    
+
     [HttpGet("queryBool")]
     public IActionResult BoolTest([FromQuery] bool value) {
         var resource = new BoolResource {
             Bool = value
         };
-        
+
         return StatusCode(200, resource);
     }
 
@@ -147,7 +150,7 @@ public sealed class TestController  : ControllerBase {
         var resource = new BoolResource {
             Bool = body.Value
         };
-        
+
         return StatusCode(200, resource);
     }
 
@@ -158,7 +161,7 @@ public sealed class TestController  : ControllerBase {
     private class IntResource : Resource {
         public int Int { get; set; }
     }
-    
+
     [HttpPost("int")]
     public IActionResult IntTest([FromBody] BodyWithInt? body) {
         if (body == null) {
@@ -174,10 +177,10 @@ public sealed class TestController  : ControllerBase {
 
     public enum BodyEnum { Value1, Value2 }
     public class BodyWithEnum {
-        [JsonConverter(typeof(JsonStringEnumConverter))] 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public BodyEnum Value { get; set; } = BodyEnum.Value1;
     }
-    
+
     private class EnumResource : Resource {
         public BodyEnum Enum { get; set; } = BodyEnum.Value1;
     }
@@ -191,6 +194,27 @@ public sealed class TestController  : ControllerBase {
 
         var resource = new EnumResource {
             Enum = body.Value
+        };
+
+        return StatusCode(200, resource);
+    }
+
+    public class BodyWithDateTime {
+        public DateTime Value { get; set; } = DateTime.Now;
+    }
+
+    private class DateTimeResource : Resource {
+        public DateTime Value { get; set; }
+    }
+
+    [HttpPatch("datetime")]
+    public IActionResult DateTimeTest([FromBody] BodyWithDateTime? body) {
+        if (body == null) {
+            return StatusCode(500, "Could not parse value");
+        }
+
+        var resource = new DateTimeResource {
+            Value = body.Value
         };
 
         return StatusCode(200, resource);

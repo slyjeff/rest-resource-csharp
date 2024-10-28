@@ -67,14 +67,14 @@ public interface IConfigureBody<T> {
     /// </summary>
     /// <returns>The configuration class so more values can be configured</returns>
     public IConfigureBody<T> AllFields();
-    
+
     /// <summary>
     /// Do not include this field when mapping all (no, all does not mean all)
     /// </summary>
     /// <param name="mapAction">Expression to tell the data map which value to exclude- example: x => x.Name</param>
     /// <returns>The configuration class so more values can be configured</returns>
     public IConfigureBody<T> Exclude(Expression<Func<T, object>> mapAction);
-    
+
     /// <summary>
     /// Finish configuring the body
     /// </summary>
@@ -103,7 +103,7 @@ internal sealed class ConfigureBody<T> : IConfigureBody<T> {
             listOfValuesAsStrings = listOfValues.Select(x => x?.ToString() ?? string.Empty).ToList();
         }
 
-        AddField(fieldName, type, defaultValue?.ToString(), listOfValuesAsStrings);
+        AddField(fieldName, type, defaultValue.DefaultValueToString(), listOfValuesAsStrings);
 
         return this;
     }

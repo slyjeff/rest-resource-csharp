@@ -14,6 +14,11 @@ public interface ITestsResource : IResourceAccessor {
     Task<IQueryResultResource> Query(string parameter1, string parameter2);
     Task<IPostResultResource> Post(string parameter1, string parameter2);
     Task<IListResultResource> List(IList<string> list);
+    Task<IDateTimeResource> DateTime(DateTime value);
+}
+
+public interface IDateTimeResource {
+    public DateTime Value { get; set; }
 }
 
 public interface IQueryResultResource {

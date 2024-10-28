@@ -130,12 +130,6 @@ td:last-child {
     p
 }
 
-.subheader {
-    color: #fff;
-    background: #555;
-    p
-}
-
 .header-heading { margin: 0; }
 
 .content { padding: 1em 1.25em; }
@@ -144,7 +138,6 @@ td:last-child {
 
 @media (min-width: 42em) {
     .header { padding: 1.5em 3em; }
-    .subheader { padding: .2em 3em; }
     .content { padding: 2em 3em; }
 }";
 
@@ -154,12 +147,12 @@ td:last-child {
         htmlWriter.RenderEndTag(); //style
     }
 
-    private static void WriteHeader(HtmlTextWriter htmlWriter, Resource resource, bool isRoot) {
-        htmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, isRoot ? "header" : "subheader");
+    private static void WriteHeader(HtmlTextWriter htmlWriter, Resource resource) {
+        htmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, "header");
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
         htmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, "header-heading");
-        htmlWriter.RenderBeginTag(isRoot ? HtmlTextWriterTag.H1 : HtmlTextWriterTag.H2);
+        htmlWriter.RenderBeginTag(HtmlTextWriterTag.H1);
 
         htmlWriter.Write(resource.GetResourceName());
         htmlWriter.RenderEndTag(); // H1/H2
@@ -189,7 +182,9 @@ td:last-child {
     }
 
     private static void WriteResourceAsHtml(this HtmlTextWriter htmlWriter, Resource resource, IList<string> scripts, bool isRoot = true) {
-        WriteHeader(htmlWriter, resource, isRoot);
+        if (isRoot) {
+            WriteHeader(htmlWriter, resource);
+        }
 
         htmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, "content");
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -241,6 +236,9 @@ td:last-child {
             switch (value) {
                 case string stringValue:
                     htmlWriter.WriteValue(stringValue, scripts);
+                    break;
+                case DateTime dateTimeValue:
+                    htmlWriter.WriteValue(dateTimeValue.ToString("s"), scripts);
                     break;
                 case IEnumerable enumerable:
                     htmlWriter.WriteEnumerable(enumerable, scripts);

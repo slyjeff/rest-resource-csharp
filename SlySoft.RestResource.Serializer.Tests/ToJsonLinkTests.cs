@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SlySoft.RestResource.Serializers;
 using TestUtils;
@@ -125,9 +126,9 @@ public class ToJsonLinkTests {
                 getLink = new {
                     href = href,
                     parameters = new {
-                        firstName = new {}, 
+                        firstName = new {},
                         lastName = new {}
-                    } 
+                    }
                 }
             }
         };
@@ -138,13 +139,14 @@ public class ToJsonLinkTests {
     [TestMethod]
     public void QueryMustIncludeParametersPropertiesInJson() {
         //arrange
+        var defaultDate = DateTime.Now.AddDays(-1);
         var href = GenerateRandom.String();
         var resource = new Resource()
             .Query<User>("getLink", href)
                 .Parameter(x => x.Position, defaultValue: UserPosition.Admin, listOfValues: new []{ UserPosition.Standard, UserPosition.Admin })
                 .Parameter(x => x.YearsEmployed, type: "number")
+                .Parameter(x => x.DateCreated, defaultValue: defaultDate)
             .EndQuery();
-
 
         //act
         var json = resource.ToJson();
@@ -155,8 +157,9 @@ public class ToJsonLinkTests {
                 getLink = new {
                     href = href,
                     parameters = new {
-                        position = new { defaultValue = "Admin", listOfValues = new[]{"Standard", "Admin"}}, 
-                        yearsEmployed = new { type = "number" }
+                        position = new { defaultValue = "Admin", listOfValues = new[]{"Standard", "Admin"}},
+                        yearsEmployed = new { type = "number" },
+                        dateCreated = new { defaultValue = defaultDate.ToString("s")}
                     }
                 }
             }
@@ -212,7 +215,7 @@ public class ToJsonLinkTests {
         var expectedJson = JsonConvert.SerializeObject(expected, Formatting.Indented);
         Assert.AreEqual(expectedJson, json);
     }
-    
+
     [TestMethod]
     public void PatchLinkMustContainVerb() {
         //arrange
