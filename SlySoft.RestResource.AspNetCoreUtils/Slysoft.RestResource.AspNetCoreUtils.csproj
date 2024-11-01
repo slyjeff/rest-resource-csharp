@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.12-Beta</Version>
+    <Version>1.0.0.13-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
     <Title>SlySoft REST Resource ASP.NET Core Utils</Title>
     <Company>SlySoft</Company>

@@ -4,9 +4,9 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.9-Beta</Version>
+    <Version>1.0.0.13-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
-    <Title>SlySoft REST Resource HAL Utils</Title>
+    <Title>SlySoft REST Resource JSON/XML Utils</Title>
     <Company>SlySoft</Company>
     <Copyright>Jeff Sylvester, 2023</Copyright>
     <RepositoryUrl>https://github.com/slyjeff/rest-resource-csharp</RepositoryUrl>
