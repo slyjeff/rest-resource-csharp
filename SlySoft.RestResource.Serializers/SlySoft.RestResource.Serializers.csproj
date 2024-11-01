@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -11,6 +10,7 @@
     <Company>SlySoft</Company>
     <Copyright>Jeff Sylvester, 2023</Copyright>
     <RepositoryUrl>https://github.com/slyjeff/rest-resource-csharp</RepositoryUrl>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

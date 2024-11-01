@@ -222,19 +222,31 @@ public class GetTests {
     public void QueryMappingMustAllowSettingOfDateDefaultValues() {
         //arrange
         var defaultDate = DateTime.Now.AddDays(-1);
+        var defaultDob = new DateOnly(2005, 03, 27);
+        var defaultShiftStart = new TimeOnly(9, 30, 0);
 
         //act
         var resource = new Resource()
             .Query<User>("search", "/api/user")
                 .Parameter(x => x.DateCreated, defaultValue: defaultDate)
+                .Parameter(x => x.DateOfBirth, defaultValue: defaultDob)
+                .Parameter(x => x.ShiftStart, defaultValue: defaultShiftStart)
             .EndQuery();
 
         //assert
         var link = resource.GetLink("search");
         Assert.IsNotNull(link);
-        var queryParameter = link.GetParameter("dateCreated");
-        Assert.IsNotNull(queryParameter);
-        Assert.AreEqual(defaultDate.ToString("s"), queryParameter.DefaultValue);
+        var dateCreatedParameter = link.GetParameter("dateCreated");
+        Assert.IsNotNull(dateCreatedParameter);
+        Assert.AreEqual(defaultDate.ToString("s"), dateCreatedParameter.DefaultValue);
+
+        var dobParameter = link.GetParameter("dateOfBirth");
+        Assert.IsNotNull(dobParameter);
+        Assert.AreEqual(defaultDob.ToString("yyy-MM-dd"), dobParameter.DefaultValue);
+        
+        var shiftStartParameter = link.GetParameter("shiftStart");
+        Assert.IsNotNull(shiftStartParameter);
+        Assert.AreEqual(defaultShiftStart.ToString("HH:mm:ss"), shiftStartParameter.DefaultValue);
     }
 
     [TestMethod]

@@ -12,4 +12,6 @@ public sealed class User {
     public bool? IsRegisteredNullable { get; set; }
 
     public DateTime DateCreated { get; set; } = DateTime.Now;
+    public DateOnly DateOfBirth { get; set; } = new DateOnly(2000, 6, 17);
+    public TimeOnly ShiftStart { get; set; } = new TimeOnly(7, 30, 0);
 }

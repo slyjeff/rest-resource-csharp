@@ -1,17 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.11-Beta</Version>
+    <Version>1.0.0.12-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
     <Title>SlySoft Rest Resource</Title>
     <Company>SlySoft</Company>
     <Copyright>Jeff Sylvester, 2023</Copyright>
     <Description>Utility for creating representing resources containing data, links, and embedded resources.</Description>
     <RepositoryUrl>https://github.com/slyjeff/rest-resource-csharp</RepositoryUrl>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

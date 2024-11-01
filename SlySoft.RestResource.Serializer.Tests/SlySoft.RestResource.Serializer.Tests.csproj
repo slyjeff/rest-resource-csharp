@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SlySoft.RestResource.Hal\SlySoft.RestResource.Hal.csproj" />
     <ProjectReference Include="..\SlySoft.RestResource.Serializers\SlySoft.RestResource.Serializers.csproj" />
     <ProjectReference Include="..\Slysoft.RestResource\SlySoft.RestResource.csproj" />
     <ProjectReference Include="..\TestUtils\TestUtils.csproj" />

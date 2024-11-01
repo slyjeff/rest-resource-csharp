@@ -223,7 +223,7 @@ td:last-child {
         htmlWriter.RenderBeginTag(HtmlTextWriterTag.Table);
 
         foreach (var property in properties) {
-            var name = property.Name.ToLower();
+            var name = property.Name.ToCamelCase();
             var value = property.GetValue(o);
 
             htmlWriter.RenderBeginTag(HtmlTextWriterTag.Tr);

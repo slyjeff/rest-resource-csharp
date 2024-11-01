@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slysoft.RestResource\SlySoft.RestResource.csproj" />
+    <ProjectReference Include="..\Slysoft.RestResource\SlySoft.RestResource.csproj"/>
     <ProjectReference Include="..\TestUtils\TestUtils.csproj" />
   </ItemGroup>
 

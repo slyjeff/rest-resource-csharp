@@ -140,12 +140,16 @@ public class ToJsonLinkTests {
     public void QueryMustIncludeParametersPropertiesInJson() {
         //arrange
         var defaultDate = DateTime.Now.AddDays(-1);
+        var defaultDob = new DateOnly(2005, 03, 27);
+        var defaultShiftStart = new TimeOnly(9, 30, 0);
         var href = GenerateRandom.String();
         var resource = new Resource()
             .Query<User>("getLink", href)
                 .Parameter(x => x.Position, defaultValue: UserPosition.Admin, listOfValues: new []{ UserPosition.Standard, UserPosition.Admin })
                 .Parameter(x => x.YearsEmployed, type: "number")
                 .Parameter(x => x.DateCreated, defaultValue: defaultDate)
+                .Parameter(x => x.DateOfBirth, defaultValue: defaultDob)
+                .Parameter(x => x.ShiftStart, defaultValue: defaultShiftStart)
             .EndQuery();
 
         //act
@@ -159,7 +163,9 @@ public class ToJsonLinkTests {
                     parameters = new {
                         position = new { defaultValue = "Admin", listOfValues = new[]{"Standard", "Admin"}},
                         yearsEmployed = new { type = "number" },
-                        dateCreated = new { defaultValue = defaultDate.ToString("s")}
+                        dateCreated = new { defaultValue = defaultDate.ToString("s")},
+                        dateOfBirth = new { defaultValue = defaultDob.ToString("yyyy-MM-dd")},
+                        shiftStart = new { defaultValue = defaultShiftStart.ToString("HH:mm:ss")}
                     }
                 }
             }
