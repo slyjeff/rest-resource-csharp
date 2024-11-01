@@ -7,7 +7,7 @@ namespace SlySoft.RestResource.Client;
 internal static class ObjectDataAccessorFactory {
     private static readonly Dictionary<Type, Type> CreatedTypes = new();
 
-    internal static object CreateAccessor(Type interfaceType, ObjectData objectData) {
+    internal static object CreateAccessor(Type interfaceType, ObjectData objectData, IRestClient restClient) {
         Type accessorType;
 
         lock (CreatedTypes) {
@@ -19,7 +19,7 @@ internal static class ObjectDataAccessorFactory {
             accessorType = CreatedTypes[interfaceType];
         }
 
-        var accessor = Activator.CreateInstance(accessorType, objectData);
+        var accessor = Activator.CreateInstance(accessorType, objectData, restClient);
         if (accessor == null) {
             throw new CreateAccessorException($"Create Accessor for type {interfaceType.Name} returned a null.");
         }

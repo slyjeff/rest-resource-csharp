@@ -11,6 +11,8 @@ public interface ISimpleResource : IEditableAccessor {
     OptionEnum Option { get; }
     bool? IsOptional { get; }
     DateTime Date { get;  }
+    DateOnly DateOnly { get; }
+    TimeOnly TimeOnly { get; }
     IList<string> Strings { get; }
     IList<int> Numbers { get; }
     ChildResource Child { get; }
@@ -43,6 +45,8 @@ public sealed class SimpleResource : Resource {
     public OptionEnum Option { get; set; } = OptionEnum.Option2;
     public bool? IsOptional { get; set; } = true;
     public DateTime Date { get; set; } = DateTime.Now;
+    public DateOnly DateOnly { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+    public TimeOnly TimeOnly { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
     public IList<string> Strings { get; } = new List<string> { GenerateRandom.String(), GenerateRandom.String(), GenerateRandom.String() };
     public IList<int> Numbers { get; } = new List<int> { GenerateRandom.Int(), GenerateRandom.Int(), GenerateRandom.Int() };
     public ChildResource Child { get; }
@@ -54,7 +58,6 @@ public sealed class SimpleResource : Resource {
 public interface IChildResource {
     string ChildMessage { get; set; }
     int ChildNumber { get; }
-    Task Self();
 }
 
 public sealed class ChildResource : Resource {

@@ -63,7 +63,19 @@ public static class ToJsonExtensions {
                     o[data.Key] = data.Value.CreateJObject();
                     return;
                 }
-
+                
+#if NET8_0_OR_GREATER
+                switch (data.Value)
+                {
+                    case DateOnly dateOnlyValue:
+                        o[data.Key] = dateOnlyValue.ToString("yyyy-MM-dd");
+                        return;
+                    case TimeOnly timeOnlyValue:
+                        o[data.Key] = timeOnlyValue.ToString("HH:mm:ss");
+                        return;
+                }
+#endif
+                
                 o[data.Key] = new JValue(data.Value);
                 break;
         }

@@ -51,6 +51,18 @@ public sealed class PropertyTests {
         //assert
         Assert.AreEqual(source.Option, destination.Option);
     }
+    
+    [TestMethod]
+    public void MustBeAbleToAccessADateOnly() {
+        //arrange
+        var source = new SimpleResource();
+
+        //act
+        var destination = CreateAccessor(source);
+
+        //assert
+        Assert.AreEqual(source.DateOnly, destination.DateOnly);
+    }
 
     [TestMethod]
     public void MustBeAbleToAccessAnNullable() {

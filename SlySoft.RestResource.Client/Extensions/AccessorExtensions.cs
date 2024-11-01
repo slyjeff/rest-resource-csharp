@@ -54,7 +54,7 @@ internal static class AccessorExtensions {
             case true when value is ClientResource clientResource:
                 return ResourceAccessorFactory.CreateAccessor(type, clientResource, restClient);
             case true when value is ObjectData objectData:
-                return ObjectDataAccessorFactory.CreateAccessor(type, objectData);
+                return ObjectDataAccessorFactory.CreateAccessor(type, objectData, restClient);
         }
 
         switch (type.IsClass) {
