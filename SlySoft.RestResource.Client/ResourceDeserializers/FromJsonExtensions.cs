@@ -118,10 +118,6 @@ public static class FromJsonExtensions {
     }
 
     private static void GetLink(this ClientResource clientResource, KeyValuePair<string, JToken?> linkObject) {
-        if (linkObject.Key == "self") {
-            return;
-        }
-
         if (linkObject.Value is not JObject linkData) {
             return;
         }

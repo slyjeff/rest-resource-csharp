@@ -14,6 +14,7 @@ public interface ITestsResource : IResourceAccessor {
     Task<string> NotFound();
     Task<string> Text();
     Task<IQueryResultResource> Query(string parameter1, string parameter2);
+    Task<IQueryListResultResource> QueryList(int[] items);
     Task<IPostResultResource> Post(string parameter1, string parameter2);
     Task<IListResultResource> List(IList<string> list);
     Task<IDateTimeResource> DateTime(DateTime value);
@@ -26,6 +27,10 @@ public interface IDateTimeResource {
 public interface IQueryResultResource {
     string Parameter1 { get; }
     string Parameter2 { get; }
+}
+
+public interface IQueryListResultResource {
+    IList<int> Items { get; }
 }
 
 public interface IPostResultResource {

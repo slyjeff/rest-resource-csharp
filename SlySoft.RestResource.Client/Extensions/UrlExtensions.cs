@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -17,13 +18,24 @@ internal static class UrlExtensions {
             }
 
             stringBuilder.Append(stringBuilder.Length == 0 ? '?' : '&');
-            stringBuilder.Append(item.Key);
-            stringBuilder.Append('=');
-            stringBuilder.Append(item.Value);
+            if (item.Value is IEnumerable values and not string) {
+                foreach (var value in values) {
+                    stringBuilder.AppendQueryParameter(item.Key, value);
+                    stringBuilder.Append('&');
+                }
+            } else {
+                stringBuilder.AppendQueryParameter(item.Key, item.Value);
+            }
         }
 
         return url + stringBuilder;
     }
+
+    private static void AppendQueryParameter(this StringBuilder stringBuilder, string key, object value) {
+        stringBuilder.Append(key);
+        stringBuilder.Append('=');
+        stringBuilder.Append(value);
+    } 
 
     public static string AppendUrl(this string baseUrl, string url) {
 #if NET6_0_OR_GREATER

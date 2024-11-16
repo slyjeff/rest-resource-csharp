@@ -20,6 +20,9 @@ public sealed class TestController  : ControllerBase {
                 .Parameter("parameter1")
                 .Parameter("parameter2")
             .EndQuery()
+            .Query("queryList", "test/query-list")
+                .Parameter("items")
+            .EndQuery()
             .Post("post", "test/post")
                 .Field("parameter1")
                 .Field("parameter2")
@@ -76,6 +79,19 @@ public sealed class TestController  : ControllerBase {
         var resource = new QueryResource{
             Parameter1 = parameter1,
             Parameter2 = parameter2
+        };
+
+        return StatusCode(200, resource);
+    }
+
+    private class QueryListResource : Resource {
+        public int[] Items { get; set; } = [];
+    }
+    
+    [HttpGet("query-list")]
+    public IActionResult Query([FromQuery] int[] items) {
+        var resource = new QueryListResource{
+            Items = items
         };
 
         return StatusCode(200, resource);

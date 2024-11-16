@@ -85,6 +85,23 @@ public class ClientTests {
         Assert.AreEqual(parameter1, queryResult.Parameter1);
         Assert.AreEqual(parameter2, queryResult.Parameter2);
     }
+    
+    [TestMethod]
+    public async Task MustPassListQueryParameters() {
+        //arrange
+        var application = await _restClient.GetAsync<IApplicationResource>();
+        var tests = await application.GetTests();
+        var parameter1 = GenerateRandom.Int();
+        var parameter2 = GenerateRandom.Int();
+
+        //act
+        var queryResult = await tests.QueryList([parameter1, parameter2]);
+
+        //assert
+        Assert.AreEqual(2, queryResult.Items.Count);
+        Assert.AreEqual(parameter1, queryResult.Items[0]);
+        Assert.AreEqual(parameter2, queryResult.Items[1]);
+    }
 
     [TestMethod]
     public async Task MustBeAbleToPost() {
