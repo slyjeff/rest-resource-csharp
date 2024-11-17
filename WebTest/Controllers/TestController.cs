@@ -6,8 +6,11 @@ namespace WebTest.Controllers;
 
 [Route("[controller]")]
 public sealed class TestController  : ControllerBase {
+    public enum TestEnum { Value1, Value2, Value3 }
+
     private class TestResource : Resource {
         public string Description { get; } = "Tests used by the ClientTest app.";
+        public TestEnum TestEnum { get; } = TestEnum.Value1;
     }
 
     [HttpGet]

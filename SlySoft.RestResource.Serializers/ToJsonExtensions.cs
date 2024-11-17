@@ -59,6 +59,11 @@ public static class ToJsonExtensions {
                 o[data.Key] = array;
                 break;
             default:
+                if (data.Value.GetType().IsEnum) {
+                    o[data.Key] = data.Value.ToString();
+                    return;
+                }
+
                 if (data.Value.GetType().IsClass) {
                     o[data.Key] = data.Value.CreateJObject();
                     return;
