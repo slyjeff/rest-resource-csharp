@@ -15,11 +15,11 @@ public class Resource {
 
             var type = sourceData.GetType();
             foreach (var sourceProperty in type.GetAllProperties()) {
-                var destinationProperty = destinationProperties.FirstOrDefault(x => x.Name == sourceProperty.Name);
+                var destinationProperty = destinationProperties.FirstOrDefault(x => x.Name == sourceProperty.Name && x.PropertyType == sourceProperty.PropertyType && x.CanWrite);
                 if (destinationProperty == null) {
                     continue;
                 }
-
+                
                 destinationProperty.SetValue(this, sourceProperty.GetValue(sourceData));
             }
         }
