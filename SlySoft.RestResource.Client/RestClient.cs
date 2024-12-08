@@ -103,7 +103,7 @@ public sealed class RestClient : IRestClient {
             BaseAddress = new Uri(baseAddress),
             Timeout = Timeout.InfiniteTimeSpan
         };
-        SetDefaultAcceptHeader("application/slysoft.hal+json", "application/hal+json", "application/json");
+        SetDefaultAcceptHeader("application/slysoft+json", "application/json");
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public sealed class RestClient : IRestClient {
     public RestClient(HttpClient httpClient) {
         _httpClient = httpClient;
         _httpClient.Timeout = Timeout.InfiniteTimeSpan;
-        SetDefaultAcceptHeader("application/slysoft.hal+json", "application/hal+json", "application/json");
+        SetDefaultAcceptHeader("application/slysoft+json", "application/json");
     }
 
     /// <summary>
