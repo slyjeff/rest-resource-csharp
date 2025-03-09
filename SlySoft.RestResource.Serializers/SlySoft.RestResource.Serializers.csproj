@@ -4,7 +4,7 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.0.19-Beta</Version>
+    <Version>1.0.0.20-Beta</Version>
     <Authors>Jeff Sylvester</Authors>
     <Title>SlySoft REST Resource JSON/XML Utils</Title>
     <Company>SlySoft</Company>

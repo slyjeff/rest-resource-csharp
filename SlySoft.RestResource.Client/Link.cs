@@ -41,7 +41,7 @@ public sealed class Link {
     public bool Templated { get; }
 
     /// <summary>
-    /// List of of parameter this link expects (query parameters for the URL, form fields for the body)
+    /// List of parameter this link expects (query parameters for the URL, form fields for the body)
     /// </summary>
     public IList<LinkParameter> Parameters { get; } = new List<LinkParameter>();
 
