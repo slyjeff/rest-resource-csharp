@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using SlySoft.RestResource.Client.Extensions;
 
 namespace SlySoft.RestResource.Client; 
@@ -53,4 +54,21 @@ public sealed class ResponseErrorCodeException : RestResourceClientException {
     }
 
     public HttpStatusCode StatusCode { get; }
+
+    public T? Content<T>() {
+        if (string.IsNullOrWhiteSpace(Message)) return default;
+        if (typeof(T) == typeof(string)) return (T)(object)Message;
+        try {
+            var targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+            if (!targetType.IsEnum)
+                return System.Text.Json.JsonSerializer.Deserialize<T>(Message, options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var trimmed = Message.Trim().Trim('"');
+            var enumObj = long.TryParse(trimmed, out var numeric) 
+                ? Enum.ToObject(targetType, numeric) 
+                : Enum.Parse(targetType, trimmed, ignoreCase: true);
+            return (T)enumObj;
+        } catch (Exception ex) {
+            throw new RestCallException($"Failed to deserialize response content to {typeof(T).Name}.", ex);
+        }    
+    }
 }

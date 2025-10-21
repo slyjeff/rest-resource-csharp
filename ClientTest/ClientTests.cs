@@ -56,6 +56,67 @@ public class ClientTests {
             Assert.AreEqual(HttpStatusCode.NotFound, e.StatusCode);
         }
     }
+    
+    [TestMethod]
+    public async Task MustDecodeExceptionStringContent() {
+        //arrange
+        var application = await _restClient.GetAsync<IApplicationResource>();
+        var tests = await application.GetTests();
+
+        //act
+        try {
+            await tests.BadRequestString();
+
+            //Assert
+            Assert.Fail("ResponseErrorCodeException exception not thrown");
+        } catch (ResponseErrorCodeException e) {
+            Assert.AreEqual(HttpStatusCode.BadRequest, e.StatusCode);
+            Assert.AreEqual("UsernameTaken", e.Content<string>());
+        }
+    }
+    
+    [TestMethod]
+    public async Task MustDecodeExceptionEnumContent() {
+        //arrange
+        var application = await _restClient.GetAsync<IApplicationResource>();
+        var tests = await application.GetTests();
+
+        //act
+        try {
+            await tests.BadRequestEnum();
+
+            //Assert
+            Assert.Fail("ResponseErrorCodeException exception not thrown");
+        } catch (ResponseErrorCodeException e) {
+            Assert.AreEqual(HttpStatusCode.BadRequest, e.StatusCode);
+            Assert.AreEqual(TestEnum.UsernameTaken, e.Content<TestEnum>());
+        }
+    }
+    
+    private class ErrorObject {
+        public TestEnum Error { get; set; }
+    }
+    
+    [TestMethod]
+    public async Task MustDecodeExceptionObjectContent() {
+        //arrange
+        var application = await _restClient.GetAsync<IApplicationResource>();
+        var tests = await application.GetTests();
+
+        //act
+        try {
+            await tests.BadRequestObject();
+
+            //Assert
+            Assert.Fail("ResponseErrorCodeException exception not thrown");
+        } catch (ResponseErrorCodeException e) {
+            Assert.AreEqual(HttpStatusCode.BadRequest, e.StatusCode);
+            var wantObject = new ErrorObject {
+                Error = TestEnum.BadPassword
+            };
+            Assert.AreEqual(wantObject.Error, e.Content<ErrorObject>()?.Error);
+        }
+    }
 
     [TestMethod]
     public async Task MustGetNonResourceText() {

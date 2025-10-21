@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using SlySoft.RestResource;
 using System.Text.Json.Serialization;
 
@@ -17,6 +18,9 @@ public sealed class TestController  : ControllerBase {
     public IActionResult GetTests() {
         var resource = new TestResource()
             .Get("notFound", "/test/notFound")
+            .Get("badRequestString", "/test/badRequestString")
+            .Get("badRequestEnum", "/test/badRequestEnum")
+            .Get("badRequestObject", "/test/badRequestObject")
             .Get("text", "/test/text")
             .Get("templatedGet", "test/templated/{value1}/{value2}", templated: true)
             .Query("query", "test/query")
@@ -52,6 +56,31 @@ public sealed class TestController  : ControllerBase {
         return StatusCode(404, "Resource not found.");
     }
 
+    private enum BadRequestEnum{BadPassword, UsernameTaken}
+    
+    [HttpGet("badRequestString")]
+    public IActionResult BadRequestStringTest() {
+        return StatusCode(400, "UsernameTaken");
+    }
+
+    [HttpGet("badRequestEnum")]
+    public IActionResult BadRequestEnumTest() {
+        return StatusCode(400, BadRequestEnum.UsernameTaken);
+    }
+
+    private class ErrorObject {
+        public BadRequestEnum Error { get; set; }
+    }
+    
+    [HttpGet("badRequestObject")]
+    public IActionResult BadRequestObjectTest() {
+        var obj = new ErrorObject {
+            Error = BadRequestEnum.BadPassword
+        };
+        return StatusCode(400, obj);
+    }
+
+    
     [HttpGet("text")]
     public IActionResult Text() {
         return StatusCode(200, "Non-Resource text.");

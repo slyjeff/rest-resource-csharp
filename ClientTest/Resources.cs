@@ -9,9 +9,14 @@ public interface IApplicationResource {
     Task<IListResource> GetList();
 }
 
+public enum TestEnum { BadPassword, UsernameTaken }
+
 public interface ITestsResource : IResourceAccessor {
     string Description { get; }
     Task<string> NotFound();
+    Task BadRequestString();
+    Task BadRequestEnum();
+    Task BadRequestObject();
     Task<string> Text();
     Task<IQueryResultResource> Query(string parameter1, string parameter2);
     Task<IQueryListResultResource> QueryList(int[] items);
